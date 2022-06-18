@@ -33,7 +33,7 @@ export class VaultTreeDataProvider
   static register(context: ExtensionContext, vault: Vault) {
     const tree = new VaultTreeDataProvider(vault);
     return context.subscriptions.push(
-      window.registerTreeDataProvider("vault", tree)
+      window.registerTreeDataProvider("secrets", tree)
     );
   }
 

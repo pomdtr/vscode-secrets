@@ -39,7 +39,7 @@ export class Vault {
     this.env = env;
 
     this.storage.onDidChange(async (e) => {
-      if (e.key === "vault") {
+      if (e.key === "secrets") {
         this.refresh();
       }
     });
@@ -75,7 +75,7 @@ export class Vault {
   }
 
   async refresh() {
-    const content = await this.storage.get("vault");
+    const content = await this.storage.get("secrets");
 
     this.state = content ? JSON.parse(content) : {};
 
@@ -97,7 +97,7 @@ export class Vault {
   async store(key: string, value: string): Promise<void> {
     await this.enable(key);
     await this.storage.store(
-      "vault",
+      "secrets",
       JSON.stringify({ ...this.state, [key]: value })
     );
   }
@@ -116,7 +116,7 @@ export class Vault {
 
   async delete(key: string): Promise<void> {
     await this.storage.store(
-      "vault",
+      "secrets",
       JSON.stringify({ ...this.state, [key]: undefined })
     );
   }
@@ -146,11 +146,11 @@ export class Vault {
     if (!this.validateSecretFile(content)) {
       throw new Error("Invalid secret file");
     }
-    this.storage.store("vault", content);
+    this.storage.store("secrets", content);
   }
 
   async export(uri: Uri) {
-    const vault = await this.storage.get("vault");
+    const vault = await this.storage.get("secrets");
     const buffer = Buffer.from(vault || "{}", "utf-8");
     await workspace.fs.writeFile(uri, buffer);
   }

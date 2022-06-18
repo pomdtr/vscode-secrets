@@ -1,6 +1,6 @@
 {
 	"name": "secrets",
-	"displayName": "Secret Manager",
+	"displayName": "Secrets",
 	"description": "Manage secrets in a secure way",
 	"version": "0.0.1",
 	"repository": {
@@ -19,7 +19,7 @@
 	"browser": "./dist/extension.js",
 	"contributes": {
 		"configuration": {
-			"title": "Secret Manager",
+			"title": "Secrets",
 			"properties": {
 				"secrets.allowlist": {
 					"type": "array",
@@ -99,7 +99,7 @@
 			"explorer": [
 				{
 					"id": "secrets",
-					"name": "Secret Manager"
+					"name": "Secrets"
 				}
 			]
 		},
