@@ -73,13 +73,17 @@ export class VaultTreeDataProvider
     if (item) {
       return item.children;
     }
-    return [
-      ...this.vault.list(true),
-      {
-        category: "Disabled",
-        children: this.vault.list(false),
-        collapsibleState: TreeItemCollapsibleState.Collapsed,
-      },
-    ];
+    const enabled = this.vault.list(true);
+    const disabled = this.vault.list(false);
+    return disabled.length > 0
+      ? [
+          ...enabled,
+          {
+            category: "Disabled",
+            children: this.vault.list(false),
+            collapsibleState: TreeItemCollapsibleState.Collapsed,
+          },
+        ]
+      : enabled;
   }
 }
