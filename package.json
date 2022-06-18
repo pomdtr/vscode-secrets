@@ -3,6 +3,10 @@
 	"displayName": "Secret Manager",
 	"description": "Manage secrets in a secure way",
 	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/pomdtr/vscode-secrets"
+	},
 	"engines": {
 		"vscode": "^1.68.0"
 	},
@@ -10,7 +14,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"*"
+		"onStartupFinished"
 	],
 	"browser": "./dist/extension.js",
 	"contributes": {
