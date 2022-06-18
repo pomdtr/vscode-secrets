@@ -53,7 +53,7 @@ export class Vault {
   }
 
   async disable(key: string) {
-    this.allowlist = this.allowlist.filter((k) => k !== key);
+    this.allowlist = [...new Set(this.allowlist.filter((k) => k !== key))];
     await Vault.getConfig().update(
       "allowlist",
       this.allowlist,
@@ -64,7 +64,7 @@ export class Vault {
   }
 
   async enable(key: string) {
-    this.allowlist = [...this.allowlist, key];
+    this.allowlist = [...new Set([...this.allowlist, key])];
     await Vault.getConfig().update(
       "allowlist",
       this.allowlist,
