@@ -88,7 +88,8 @@ export class SecretController {
   }
 
   async deleteSecret(key: string) {
-    this.vault.delete(key);
+    await this.vault.delete(key);
+    this.disable(key);
   }
 
   async disable(key: string) {
