@@ -1,0 +1,182 @@
+{
+	"name": "secret-manager",
+	"displayName": "Secret Manager",
+	"description": "Manage secrets in a secure way",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.68.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"browser": "./dist/extension.js",
+	"contributes": {
+		"configuration": {
+			"title": "Secret Manager",
+			"properties": {
+				"secretManager.allowlist": {
+					"type": "array",
+					"markdownDescription": "A list of secrets that are active in the current workspace.",
+					"items": {
+						"type": "string"
+					},
+					"default": []
+				}
+			}
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "vault.create",
+					"when": "view == vault",
+					"group": "navigation"
+				},
+				{
+					"command": "vault.import",
+					"when": "view == vault"
+				},
+				{
+					"command": "vault.export",
+					"when": "view == vault"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "vault.copy",
+					"when": "view == vault && viewItem != category",
+					"group": "inline@1"
+				},
+				{
+					"command": "vault.edit",
+					"when": "view == vault && viewItem != category",
+					"group": "inline@2"
+				},
+				{
+					"command": "vault.delete",
+					"when": "view == vault && viewItem != category",
+					"group": "inline@3"
+				},
+				{
+					"command": "vault.enable",
+					"when": "view == vault && viewItem == disabledItem"
+				},
+				{
+					"command": "vault.disable",
+					"when": "view == vault && viewItem == enabledItem"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "vault.enable",
+					"when": "false"
+				},
+				{
+					"command": "vault.disable",
+					"when": "false"
+				},
+				{
+					"command": "vault.copy",
+					"when": "false"
+				},
+				{
+					"command": "vault.edit",
+					"when": "false"
+				},
+				{
+					"command": "vault.delete",
+					"when": "false"
+				}
+			]
+		},
+		"views": {
+			"explorer": [
+				{
+					"id": "vault",
+					"name": "Secret Manager"
+				}
+			]
+		},
+		"viewsWelcome": [
+			{
+				"view": "vault",
+				"contents": "No secret found.\n[Create Secret](command:vault.create)"
+			}
+		],
+		"commands": [
+			{
+				"command": "vault.edit",
+				"title": "Edit Secret",
+				"shortTitle": "Edit",
+				"icon": "$(pencil)"
+			},
+			{
+				"command": "vault.copy",
+				"title": "Copy Secret",
+				"shortTitle": "Copy",
+				"icon": "$(clippy)"
+			},
+			{
+				"command": "vault.delete",
+				"title": "Delete Secret",
+				"shortTitle": "Delete",
+				"icon": "$(trash)"
+			},
+			{
+				"command": "vault.create",
+				"title": "Create Secret",
+				"shortTitle": "Create",
+				"icon": "$(plus)"
+			},
+			{
+				"command": "vault.import",
+				"title": "Import Secrets",
+				"icon": "$(file-add)"
+			},
+			{
+				"command": "vault.export",
+				"title": "Export Secrets",
+				"icon": "$(save-as)"
+			},
+			{
+				"command": "vault.enable",
+				"title": "Enable Secret"
+			},
+			{
+				"command": "vault.disable",
+				"title": "Disable Secret"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "16.x",
+		"@types/vscode": "^1.68.0",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"@vscode/test-electron": "^2.1.3",
+		"buffer": "^6.0.3",
+		"eslint": "^8.16.0",
+		"glob": "^8.0.3",
+		"mocha": "^10.0.0",
+		"process": "^0.11.10",
+		"ts-loader": "^9.3.0",
+		"typescript": "^4.7.2",
+		"webpack": "^5.72.1",
+		"webpack-cli": "^4.9.2"
+	}
+}
