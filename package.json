@@ -1,5 +1,5 @@
 {
-	"name": "secret-manager",
+	"name": "secrets",
 	"displayName": "Secret Manager",
 	"description": "Manage secrets in a secure way",
 	"version": "0.0.1",
@@ -21,7 +21,7 @@
 		"configuration": {
 			"title": "Secret Manager",
 			"properties": {
-				"secretManager.allowlist": {
+				"secrets.allowlist": {
 					"type": "array",
 					"markdownDescription": "A list of secrets that are active in the current workspace.",
 					"items": {
@@ -34,63 +34,63 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "vault.create",
-					"when": "view == vault",
+					"command": "secrets.create",
+					"when": "view == secrets",
 					"group": "navigation"
 				},
 				{
-					"command": "vault.import",
-					"when": "view == vault"
+					"command": "secrets.import",
+					"when": "view == secrets"
 				},
 				{
-					"command": "vault.export",
-					"when": "view == vault"
+					"command": "secrets.export",
+					"when": "view == secrets"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "vault.copy",
-					"when": "view == vault && viewItem != category",
+					"command": "secrets.copy",
+					"when": "view == secrets && viewItem != category",
 					"group": "inline@1"
 				},
 				{
-					"command": "vault.edit",
-					"when": "view == vault && viewItem != category",
+					"command": "secrets.edit",
+					"when": "view == secrets && viewItem != category",
 					"group": "inline@2"
 				},
 				{
-					"command": "vault.delete",
-					"when": "view == vault && viewItem != category",
+					"command": "secrets.delete",
+					"when": "view == secrets && viewItem != category",
 					"group": "inline@3"
 				},
 				{
-					"command": "vault.enable",
-					"when": "view == vault && viewItem == disabledItem"
+					"command": "secrets.enable",
+					"when": "view == secrets && viewItem == disabledItem"
 				},
 				{
-					"command": "vault.disable",
-					"when": "view == vault && viewItem == enabledItem"
+					"command": "secrets.disable",
+					"when": "view == secrets && viewItem == enabledItem"
 				}
 			],
 			"commandPalette": [
 				{
-					"command": "vault.enable",
+					"command": "secrets.enable",
 					"when": "false"
 				},
 				{
-					"command": "vault.disable",
+					"command": "secrets.disable",
 					"when": "false"
 				},
 				{
-					"command": "vault.copy",
+					"command": "secrets.copy",
 					"when": "false"
 				},
 				{
-					"command": "vault.edit",
+					"command": "secrets.edit",
 					"when": "false"
 				},
 				{
-					"command": "vault.delete",
+					"command": "secrets.delete",
 					"when": "false"
 				}
 			]
@@ -98,58 +98,58 @@
 		"views": {
 			"explorer": [
 				{
-					"id": "vault",
+					"id": "secrets",
 					"name": "Secret Manager"
 				}
 			]
 		},
 		"viewsWelcome": [
 			{
-				"view": "vault",
-				"contents": "No secret found.\n[Create Secret](command:vault.create)"
+				"view": "secrets",
+				"contents": "No secret found.\n[Create Secret](command:secrets.create)"
 			}
 		],
 		"commands": [
 			{
-				"command": "vault.edit",
+				"command": "secrets.edit",
 				"title": "Edit Secret",
 				"shortTitle": "Edit",
 				"icon": "$(pencil)"
 			},
 			{
-				"command": "vault.copy",
+				"command": "secrets.copy",
 				"title": "Copy Secret",
 				"shortTitle": "Copy",
 				"icon": "$(clippy)"
 			},
 			{
-				"command": "vault.delete",
+				"command": "secrets.delete",
 				"title": "Delete Secret",
 				"shortTitle": "Delete",
 				"icon": "$(trash)"
 			},
 			{
-				"command": "vault.create",
+				"command": "secrets.create",
 				"title": "Create Secret",
 				"shortTitle": "Create",
 				"icon": "$(plus)"
 			},
 			{
-				"command": "vault.import",
+				"command": "secrets.import",
 				"title": "Import Secrets",
 				"icon": "$(file-add)"
 			},
 			{
-				"command": "vault.export",
+				"command": "secrets.export",
 				"title": "Export Secrets",
 				"icon": "$(save-as)"
 			},
 			{
-				"command": "vault.enable",
+				"command": "secrets.enable",
 				"title": "Enable Secret"
 			},
 			{
-				"command": "vault.disable",
+				"command": "secrets.disable",
 				"title": "Disable Secret"
 			}
 		]

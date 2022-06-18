@@ -26,10 +26,7 @@ export class SecretController {
       workspace.workspaceFolders &&
       workspace.workspaceFolders.length > 0
     ) {
-      defaultUri = Uri.joinPath(
-        workspace.workspaceFolders[0].uri,
-        "vault.json"
-      );
+      defaultUri = workspace.workspaceFolders[0].uri;
     }
 
     const uri = await window.showOpenDialog({
@@ -37,15 +34,21 @@ export class SecretController {
       canSelectMany: false,
       filters: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        "Vault secrets": ["json"],
+        Secrets: ["json"],
       },
       openLabel: "Import",
     });
     if (!uri || uri.length === 0) {
       return;
     }
-    await this.vault.import(uri[0]);
-    window.showInformationMessage(`Imported secrets`);
+    try {
+      await this.vault.import(uri[0]);
+      window.showInformationMessage(`Imported secrets`);
+    } catch (e) {
+      window.showErrorMessage(
+        "Failed to import secrets. Please check the file format."
+      );
+    }
   }
 
   async export() {
@@ -53,7 +56,7 @@ export class SecretController {
     if (workspace.workspaceFolders && workspace.workspaceFolders.length > 0) {
       defaultUri = Uri.joinPath(
         workspace.workspaceFolders[0].uri,
-        "vault.json"
+        "secrets.json"
       );
     }
 
@@ -136,16 +139,24 @@ export class SecretController {
     const manager = new SecretController(vault);
 
     context.subscriptions.push(
-      commands.registerCommand("vault.import", () => manager.import()),
-      commands.registerCommand("vault.export", () => manager.export()),
-      commands.registerCommand("vault.create", () => manager.create()),
-      commands.registerCommand("vault.delete", (key) =>
+      commands.registerCommand("secrets.import", () => manager.import()),
+      commands.registerCommand("secrets.export", () => manager.export()),
+      commands.registerCommand("secrets.create", () => manager.create()),
+      commands.registerCommand("secrets.delete", (key) =>
         manager.deleteSecret(key)
       ),
-      commands.registerCommand("vault.edit", (key) => manager.editSecret(key)),
-      commands.registerCommand("vault.copy", (key) => manager.copySecret(key)),
-      commands.registerCommand("vault.disable", (key) => manager.disable(key)),
-      commands.registerCommand("vault.enable", (key) => manager.enable(key))
+      commands.registerCommand("secrets.edit", (key) =>
+        manager.editSecret(key)
+      ),
+      commands.registerCommand("secrets.copy", (key) =>
+        manager.copySecret(key)
+      ),
+      commands.registerCommand("secrets.disable", (key) =>
+        manager.disable(key)
+      ),
+      commands.registerCommand("secrets.enable", (key) =>
+        manager.enable(key)
+      )
     );
   }
 }

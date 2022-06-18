@@ -27,7 +27,7 @@ export class Vault {
   }
 
   static getConfig() {
-    return workspace.getConfiguration("secretManager");
+    return workspace.getConfiguration("secrets");
   }
 
   isEnabled(key: string): boolean {
@@ -45,7 +45,7 @@ export class Vault {
     });
 
     workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration("secretManager.allowlist")) {
+      if (e.affectsConfiguration("secrets.allowlist")) {
         this.allowlist = Vault.getConfig().get("allowlist", []);
         this.refresh();
       }
@@ -121,9 +121,31 @@ export class Vault {
     );
   }
 
+  async validateEnvName(input: string) {
+    return input.match(/^[a-zA-Z_]+[a-zA-Z0-9_]*$/) ? true : false;
+  }
+
+  async validateSecretFile(content: string) {
+    const vault = JSON.parse(content);
+
+    for (const [key, value] of Object.entries(vault)) {
+      if (!this.validateEnvName(key)) {
+        return false;
+      }
+      if (typeof value !== "string") {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   async import(uri: Uri) {
     const document = await workspace.openTextDocument(uri);
     const content = document.getText();
+    if (!this.validateSecretFile(content)) {
+      throw new Error("Invalid secret file");
+    }
     this.storage.store("vault", content);
   }
 
