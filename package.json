@@ -1,5 +1,6 @@
 {
 	"name": "secrets",
+	"publisher": "pomdtr",
 	"displayName": "Secrets",
 	"description": "Manage secrets in a secure way",
 	"version": "0.0.1",
