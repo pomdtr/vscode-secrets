@@ -108,7 +108,7 @@ export class SecretController {
           return "Invalid key";
         }
       },
-      placeHolder: "e.g. MY_VAR",
+      placeHolder: "e.g. SECRET_NAME",
     });
     if (!key) {
       return;
@@ -116,6 +116,7 @@ export class SecretController {
     const value = await window.showInputBox({
       title: "Secret Value",
       validateInput: (input) => (!input ? "Value is required" : undefined),
+      placeHolder: "e.g. PASSWORD",
     });
     if (!value) {
       return;
