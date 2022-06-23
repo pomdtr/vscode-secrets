@@ -7,33 +7,41 @@ import {
   ExtensionContext,
   window,
   ThemeIcon,
-  ThemeColor,
   TreeItemCollapsibleState,
 } from "vscode";
 import { Vault } from "./vault";
 
-interface Category {
-  category: string;
-  children: string[];
-  collapsibleState: TreeItemCollapsibleState;
+export interface Collection {
+  name: string;
+  active: boolean;
+  secrets: Secret[];
 }
 
-export class VaultTreeDataProvider
-  implements TreeDataProvider<string | Category>
-{
+export interface Secret {
+  key: string;
+  collection: string;
+}
+
+export interface Category {
+  name: string;
+  expanded: boolean;
+  children: Secret[] | Collection[];
+}
+
+type Node = Secret | Category | Collection;
+
+export class VaultTreeDataProvider implements TreeDataProvider<Node> {
   vault: Vault;
 
-  private _onDidChangeTreeData: EventEmitter<
-    string | Category | undefined | null | void
-  > = new EventEmitter<string | undefined | null | void>();
-  readonly onDidChangeTreeData: Event<
-    string | Category | undefined | null | void
-  > = this._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: EventEmitter<Node | undefined | null | void> =
+    new EventEmitter();
+  readonly onDidChangeTreeData: Event<Node | undefined | null | void> =
+    this._onDidChangeTreeData.event;
 
   static register(context: ExtensionContext, vault: Vault) {
     const tree = new VaultTreeDataProvider(vault);
     return context.subscriptions.push(
-      window.registerTreeDataProvider("secrets", tree)
+      window.registerTreeDataProvider("secretExplorer", tree)
     );
   }
 
@@ -46,44 +54,56 @@ export class VaultTreeDataProvider
     vault.onChange(() => this.refresh());
   }
 
-  getTreeItem(item: string | Category): TreeItem {
-    if (typeof item === "string") {
-      const isEnabled = this.vault.isEnabled(item);
+  isCategory(item: Node): item is Category {
+    return item.hasOwnProperty("children");
+  }
+
+  isCollection(item: Node): item is Collection {
+    return item.hasOwnProperty("secrets");
+  }
+
+  getTreeItem(item: Node): TreeItem {
+    if (this.isCategory(item)) {
       return {
-        label: item,
-        iconPath: new ThemeIcon(
-          "lock",
-          isEnabled
-            ? new ThemeColor("iconForeground")
-            : new ThemeColor("disabledForeground")
-        ),
-        contextValue: isEnabled ? "enabledItem" : "disabledItem",
-        tooltip: this.vault.get(item),
+        label: item.name,
+        collapsibleState: item.expanded
+          ? TreeItemCollapsibleState.Expanded
+          : TreeItemCollapsibleState.Collapsed,
+        contextValue: `category-${item.name.toLowerCase()}`,
+      };
+    } else if (this.isCollection(item)) {
+      return {
+        label: item.name,
+        collapsibleState: TreeItemCollapsibleState.Collapsed,
+        description: item.active ? "Active" : "Inactive",
+        contextValue: "collection",
       };
     } else {
       return {
-        label: item.category,
-        collapsibleState: TreeItemCollapsibleState.Collapsed,
-        contextValue: "category",
+        label: item.key,
+        iconPath: new ThemeIcon("lock"),
+        tooltip: this.vault.get(item),
+        description: item.collection,
+        contextValue: "secret",
       };
     }
   }
 
-  getChildren(item?: Category): ProviderResult<(string | Category)[]> {
+  getChildren(item?: Category | Collection): ProviderResult<Node[]> {
     if (item) {
-      return item.children;
+      return this.isCategory(item) ? item.children : item.secrets;
     }
-    const enabled = this.vault.list(true);
-    const disabled = this.vault.list(false);
-    return disabled.length > 0
-      ? [
-          ...enabled,
-          {
-            category: "Disabled",
-            children: this.vault.list(false),
-            collapsibleState: TreeItemCollapsibleState.Collapsed,
-          },
-        ]
-      : enabled;
+    return [
+      {
+        name: "Active Secrets",
+        children: Object.values(this.vault.getActiveSecrets()),
+        expanded: true,
+      },
+      {
+        name: "Collections",
+        children: this.vault.listCollections(),
+        expanded: false,
+      },
+    ];
   }
 }

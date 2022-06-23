@@ -21,66 +21,70 @@
 		"configuration": {
 			"title": "Secrets",
 			"properties": {
-				"secrets.allowlist": {
+				"secrets.activeCollections": {
 					"type": "array",
-					"markdownDescription": "A list of secrets that are active in the current workspace.",
+					"markdownDescription": "The secrets collections to load in the current Workspace",
 					"items": {
 						"type": "string"
 					},
-					"default": []
+					"default": ["default"],
+					"scope": "window"
 				}
 			}
 		},
 		"menus": {
 			"view/title": [
 				{
-					"command": "secrets.create",
-					"when": "view == secrets",
-					"group": "navigation"
-				},
-				{
 					"command": "secrets.import",
-					"when": "view == secrets"
+					"when": "view == secretExplorer"
 				},
 				{
 					"command": "secrets.export",
-					"when": "view == secrets"
+					"when": "view == secretExplorer"
+				},
+				{
+					"command": "secrets.refresh",
+					"when": "view == secretExplorer",
+					"group": "navigation"
 				}
 			],
 			"view/item/context": [
 				{
+					"command": "collections.create",
+					"when": "view == secretExplorer && viewItem == category-collections",
+					"group": "inline@1"
+				},
+				{
+					"command": "collections.toggle",
+					"when": "view == secretExplorer && viewItem == collection"
+				},
+				{
+					"command": "collections.delete",
+					"when": "view == secretExplorer && viewItem == collection",
+					"group": "inline@2"
+				},
+				{
+					"command": "secrets.create",
+					"when": "view == secretExplorer && viewItem == collection",
+					"group": "inline@1"
+				},
+				{
+					"command": "secrets.delete",
+					"when": "view == secretExplorer && viewItem == secret",
+					"group": "inline@3"
+				},
+				{
 					"command": "secrets.copy",
-					"when": "view == secrets && viewItem != category",
+					"when": "view == secretExplorer && viewItem == secret",
 					"group": "inline@1"
 				},
 				{
 					"command": "secrets.edit",
-					"when": "view == secrets && viewItem != category",
+					"when": "view == secretExplorer && viewItem == secret",
 					"group": "inline@2"
-				},
-				{
-					"command": "secrets.delete",
-					"when": "view == secrets && viewItem != category",
-					"group": "inline@3"
-				},
-				{
-					"command": "secrets.enable",
-					"when": "view == secrets && viewItem == disabledItem"
-				},
-				{
-					"command": "secrets.disable",
-					"when": "view == secrets && viewItem == enabledItem"
 				}
 			],
 			"commandPalette": [
-				{
-					"command": "secrets.enable",
-					"when": "false"
-				},
-				{
-					"command": "secrets.disable",
-					"when": "false"
-				},
 				{
 					"command": "secrets.copy",
 					"when": "false"
@@ -98,7 +102,7 @@
 		"views": {
 			"explorer": [
 				{
-					"id": "secrets",
+					"id": "secretExplorer",
 					"name": "Secrets"
 				}
 			]
@@ -110,6 +114,25 @@
 			}
 		],
 		"commands": [
+			{
+				"command": "collections.create",
+				"title": "Add Collection",
+				"icon": "$(plus)"
+			},
+			{
+				"command": "collections.delete",
+				"title": "Add Collection",
+				"icon": "$(trash)"
+			},
+			{
+				"command": "collections.toggle",
+				"title": "Toggle Collection"
+			},
+			{
+				"command": "secrets.refresh",
+				"title": "Refresh Secrets",
+				"icon": "$(refresh)"
+			},
 			{
 				"command": "secrets.edit",
 				"title": "Edit Secret",
@@ -136,21 +159,11 @@
 			},
 			{
 				"command": "secrets.import",
-				"title": "Import Secrets",
-				"icon": "$(file-add)"
+				"title": "Import Secrets"
 			},
 			{
 				"command": "secrets.export",
-				"title": "Export Secrets",
-				"icon": "$(save-as)"
-			},
-			{
-				"command": "secrets.enable",
-				"title": "Enable Secret"
-			},
-			{
-				"command": "secrets.disable",
-				"title": "Disable Secret"
+				"title": "Export Secrets"
 			}
 		]
 	},

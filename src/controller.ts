@@ -6,6 +6,7 @@ import {
   Uri,
   env,
 } from "vscode";
+import { Collection, Secret } from "./tree";
 import { Vault } from "./vault";
 
 export class SecretController {
@@ -75,37 +76,33 @@ export class SecretController {
     this.vault.export(saveUri);
   }
 
-  async editSecret(key: string) {
-    const old = await this.vault.get(key);
-    const secret = await window.showInputBox({
+  async editSecret(secret: Secret) {
+    const old = await this.vault.get(secret);
+    const value = await window.showInputBox({
       value: old,
-      title: "Environment variable value",
+      title: "Secret Value",
       validateInput: (input) => (!input ? "Value is required" : undefined),
     });
-    if (!secret) {
+    if (!value) {
       return;
     }
 
-    await this.vault.store(key, secret);
-    await window.showInformationMessage(`Updated secret ${key}`);
+    await this.vault.store(secret, value);
+    await window.showInformationMessage(`Updated secret ${secret.key}`);
   }
 
-  async deleteSecret(key: string) {
-    await this.vault.delete(key);
-    this.disable(key);
+  async deleteSecret(secret: Secret) {
+    await this.vault.delete(secret);
   }
 
-  async disable(key: string) {
-    this.vault.disable(key);
+  async refresh() {
+    await this.vault.refresh();
+    await window.showInformationMessage(`Secrets refreshed.`);
   }
 
-  async enable(key: string) {
-    this.vault.enable(key);
-  }
-
-  async create() {
+  async create(environment: string) {
     const key = await window.showInputBox({
-      title: "Environment variable name",
+      title: "Secret Name",
       validateInput: (input) => {
         if (!input.match(/^[a-zA-Z_]+[a-zA-Z0-9_]*$/)) {
           return "Invalid key";
@@ -117,46 +114,73 @@ export class SecretController {
       return;
     }
     const value = await window.showInputBox({
-      title: "Environment variable value",
+      title: "Secret Value",
       validateInput: (input) => (!input ? "Value is required" : undefined),
     });
     if (!value) {
       return;
     }
 
-    await this.vault.store(key, value);
+    await this.vault.store({ collection: environment, key }, value);
   }
 
-  async copySecret(key: string) {
-    const secret = await this.vault.get(key);
-    if (typeof secret !== "undefined") {
-      env.clipboard.writeText(secret);
+  async addCollection() {
+    const collections = this.vault.listCollections().map((c) => c.name);
+    const name = await window.showInputBox({
+      title: "Collection Name",
+      validateInput: (input) =>
+        collections.includes(input) ? "Collection already exists" : null,
+    });
+    if (!name) {
+      return;
+    }
+    this.vault.addCollection(name);
+  }
+
+  async deleteCollection(collection: Collection) {
+    await this.vault.deleteCollection(collection);
+  }
+
+  async copySecret(secret: Secret) {
+    const value = await this.vault.get(secret);
+    if (typeof value !== "undefined") {
+      env.clipboard.writeText(value);
       window.showInformationMessage(`Copied to clipboard`);
     }
   }
 
+  async toggleCollection(collection: Collection) {
+    this.vault.toggleCollection(collection);
+  }
+
   static register(context: ExtensionContext, vault: Vault) {
-    const manager = new SecretController(vault);
+    const controller = new SecretController(vault);
 
     context.subscriptions.push(
-      commands.registerCommand("secrets.import", () => manager.import()),
-      commands.registerCommand("secrets.export", () => manager.export()),
-      commands.registerCommand("secrets.create", () => manager.create()),
-      commands.registerCommand("secrets.delete", (key) =>
-        manager.deleteSecret(key)
+      commands.registerCommand("secrets.import", () => controller.import()),
+      commands.registerCommand("secrets.export", () => controller.export()),
+      commands.registerCommand("secrets.create", (environment: Collection) =>
+        controller.create(environment.name)
       ),
-      commands.registerCommand("secrets.edit", (key) =>
-        manager.editSecret(key)
+      commands.registerCommand("secrets.delete", (secret: Secret) =>
+        controller.deleteSecret(secret)
       ),
-      commands.registerCommand("secrets.copy", (key) =>
-        manager.copySecret(key)
+      commands.registerCommand("secrets.edit", (secret: Secret) =>
+        controller.editSecret(secret)
       ),
-      commands.registerCommand("secrets.disable", (key) =>
-        manager.disable(key)
+      commands.registerCommand("secrets.copy", (secret: Secret) =>
+        controller.copySecret(secret)
       ),
-      commands.registerCommand("secrets.enable", (key) =>
-        manager.enable(key)
-      )
+      commands.registerCommand("collections.create", () =>
+        controller.addCollection()
+      ),
+      commands.registerCommand(
+        "collections.delete",
+        (collection: Collection) => controller.deleteCollection(collection)
+      ),
+      commands.registerCommand("collections.enable", (collection: Collection) => controller.toggleCollection(collection)),
+      commands.registerCommand("collections.disable", (collection: Collection) => controller.toggleCollection(collection)),
+      commands.registerCommand("secrets.refresh", () => controller.refresh()),
     );
   }
 }
