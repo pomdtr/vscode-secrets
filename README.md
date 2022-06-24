@@ -10,12 +10,12 @@ Use the secrets tree view to manage your secrets.
 
 If you want associate multiple values to the same environment variable (ex: `GITHUB_TOKEN`), you can use set it in two different collections.
 
-Use to the `secrets.activeCollections` pref to specify which collection to use in you current workspace.
+Use to the `secrets.enabledCollections` pref to specify which collection to use in you current workspace.
 
 ```javascript
 {
     // Both the default and github collections will be loaded in this workspace
-    "secrets.activeCollections": [
+    "secrets.enabledCollections": [
         "default",
         "github"
     ]

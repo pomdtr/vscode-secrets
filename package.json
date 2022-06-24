@@ -22,7 +22,7 @@
 		"configuration": {
 			"title": "Secrets",
 			"properties": {
-				"secrets.activeCollections": {
+				"secrets.enabledCollections": {
 					"type": "array",
 					"markdownDescription": "The secrets collections to load in the current Workspace",
 					"items": {
@@ -56,18 +56,22 @@
 					"group": "inline@1"
 				},
 				{
-					"command": "collections.toggle",
-					"when": "view == secretExplorer && viewItem == collection"
+					"command": "collections.enable",
+					"when": "view == secretExplorer && viewItem == disabled-collection"
 				},
 				{
-					"command": "collections.delete",
-					"when": "view == secretExplorer && viewItem == collection",
-					"group": "inline@2"
+					"command": "collections.disable",
+					"when": "view == secretExplorer && viewItem == enabled-collection"
 				},
 				{
 					"command": "secrets.create",
-					"when": "view == secretExplorer && viewItem == collection",
+					"when": "view == secretExplorer && viewItem =~ /^enabled-collection$|^disabled-collection$/",
 					"group": "inline@1"
+				},
+				{
+					"command": "collections.delete",
+					"when": "view == secretExplorer && viewItem =~ /^enabled-collection$|^disabled-collection$/",
+					"group": "inline@2"
 				},
 				{
 					"command": "secrets.delete",
@@ -126,8 +130,12 @@
 				"icon": "$(trash)"
 			},
 			{
-				"command": "collections.toggle",
-				"title": "Toggle Collection"
+				"command": "collections.enable",
+				"title": "Enable Collection"
+			},
+			{
+				"command": "collections.disable",
+				"title": "Disable Collection"
 			},
 			{
 				"command": "secrets.refresh",

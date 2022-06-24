@@ -19,14 +19,14 @@ export class Vault {
   private static readonly storageKey = "secrets";
 
   private secrets: Secrets = {};
-  private activeCollections: string[] = [];
+  private enabledCollections: string[] = [];
 
   private _onChange: EventEmitter<void> = new EventEmitter();
   readonly onChange = this._onChange.event;
 
   public getActiveSecrets(): Record<string, Secret> {
     const activeSecrets: Record<string, Secret> = {};
-    for (const context of this.activeCollections) {
+    for (const context of this.enabledCollections) {
       for (const key of Object.keys(this.secrets[context] || {})) {
         activeSecrets[key] = { key, collection: context };
       }
@@ -42,7 +42,7 @@ export class Vault {
     const vault = new Vault(storage, env);
 
     await vault.load();
-    await vault.loadActiveCollections();
+    await vault.loadEnabledCollections();
     await vault.refresh();
 
     storage.onDidChange(async (e) => {
@@ -53,8 +53,8 @@ export class Vault {
     });
 
     workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration(`${this.storageKey}.activeCollections`)) {
-        vault.loadActiveCollections();
+      if (e.affectsConfiguration(`${this.storageKey}.enabledCollections`)) {
+        vault.loadEnabledCollections();
         vault.refresh();
       }
     });
@@ -74,10 +74,10 @@ export class Vault {
         };
   }
 
-  public async loadActiveCollections() {
-    this.activeCollections = workspace
+  public async loadEnabledCollections() {
+    this.enabledCollections = workspace
       .getConfiguration(Vault.storageKey)
-      .get("activeCollections", ["default"]);
+      .get("enabledCollections", ["default"]);
   }
 
   public constructor(
@@ -130,7 +130,7 @@ export class Vault {
   public listCollections(): Collection[] {
     return Object.entries(this.secrets).map(([collection, secrets]) => ({
       name: collection,
-      active: this.activeCollections.includes(collection),
+      enabled: this.enabledCollections.includes(collection),
       secrets: Object.entries(secrets).map(([key]) => ({
         key,
         collection,
@@ -160,14 +160,14 @@ export class Vault {
       throw new Error(`Collection ${name} already exists`);
     }
     this.secrets[name] = {};
-    await this.save();
-    workspace
+    await workspace
       .getConfiguration(Vault.storageKey)
       .update(
-        "activeCollections",
-        [...this.activeCollections, name],
+        "enabledCollections",
+        [...this.enabledCollections, name],
         this.getConfigurationTarget()
       );
+    await this.save();
   }
 
   public async deleteCollection(collection: Collection) {
@@ -179,14 +179,14 @@ export class Vault {
     const conf = workspace.getConfiguration(Vault.storageKey);
     if (this.getConfigurationTarget() === ConfigurationTarget.Workspace) {
       conf.update(
-        "activeCollections",
-        this.activeCollections.filter((c) => c !== collection.name),
+        "enabledCollections",
+        this.enabledCollections.filter((c) => c !== collection.name),
         ConfigurationTarget.Workspace
       );
     }
     conf.update(
-      "activeCollections",
-      this.activeCollections.filter((c) => c !== collection.name),
+      "enabledCollections",
+      this.enabledCollections.filter((c) => c !== collection.name),
       ConfigurationTarget.Global
     );
     await this.save();
@@ -195,16 +195,16 @@ export class Vault {
   toggleCollection(collection: Collection) {
     const conf = workspace.getConfiguration(Vault.storageKey);
 
-    if (collection.active) {
+    if (collection.enabled) {
       conf.update(
-        "activeCollections",
-        this.activeCollections.filter((c) => c !== collection.name),
+        "enabledCollections",
+        this.enabledCollections.filter((c) => c !== collection.name),
         this.getConfigurationTarget()
       );
     } else {
       conf.update(
-        "activeCollections",
-        [...this.activeCollections, collection.name],
+        "enabledCollections",
+        [...this.enabledCollections, collection.name],
         this.getConfigurationTarget()
       );
     }

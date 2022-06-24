@@ -13,7 +13,7 @@ import { Vault } from "./vault";
 
 export interface Collection {
   name: string;
-  active: boolean;
+  enabled: boolean;
   secrets: Secret[];
 }
 
@@ -75,8 +75,8 @@ export class VaultTreeDataProvider implements TreeDataProvider<Node> {
       return {
         label: item.name,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
-        description: item.active ? "Active" : "Inactive",
-        contextValue: "collection",
+        description: item.enabled ? "Enabled" : "Disabled",
+        contextValue: item.enabled ? "enabled-collection" : "disabled-collection",
       };
     } else {
       return {
