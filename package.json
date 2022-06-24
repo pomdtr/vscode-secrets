@@ -108,7 +108,8 @@
 			"explorer": [
 				{
 					"id": "secretExplorer",
-					"name": "Secrets"
+					"name": "Secrets",
+					"icon": "$(lock)"
 				}
 			]
 		},
