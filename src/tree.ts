@@ -81,7 +81,7 @@ export class VaultTreeDataProvider implements TreeDataProvider<Node> {
     } else {
       return {
         label: item.key,
-        iconPath: new ThemeIcon("lock"),
+        iconPath: new ThemeIcon("key"),
         tooltip: this.vault.get(item),
         description: item.collection,
         contextValue: "secret",
