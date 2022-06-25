@@ -6,16 +6,16 @@ Define secrets shared accross workspace, injected as environment variables.
 
 Use the secrets tree view to manage your secrets.
 
-## Collections
+## Groups
 
-If you want associate multiple values to the same environment variable (ex: `GITHUB_TOKEN`), you can use set it in two different collections.
+If you want associate multiple values to the same environment variable (ex: `GITHUB_TOKEN`), you can use set it in two different groups.
 
-Use to the `secrets.enabledCollections` pref to specify which collection to use in you current workspace.
+Use to the `secrets.enabledGroups` pref to specify which group to use in you current workspace.
 
 ```javascript
 {
-    // Both the default and github collections will be loaded in this workspace
-    "secrets.enabledCollections": [
+    // Both the default and github groups will be loaded in this workspace
+    "secrets.enabledGroups": [
         "default",
         "github"
     ]

@@ -6,7 +6,7 @@ import {
   Uri,
   env,
 } from "vscode";
-import { Collection, Secret } from "./tree";
+import { Group, Secret } from "./tree";
 import { Vault } from "./vault";
 
 export class SecretController {
@@ -122,24 +122,24 @@ export class SecretController {
       return;
     }
 
-    await this.vault.store({ collection: environment, key }, value);
+    await this.vault.store({ group: environment, key }, value);
   }
 
-  async addCollection() {
-    const collections = this.vault.listCollections().map((c) => c.name);
+  async addGroup() {
+    const groups = this.vault.listGroups().map((c) => c.name);
     const name = await window.showInputBox({
-      title: "Collection Name",
+      title: "Group Name",
       validateInput: (input) =>
-        collections.includes(input) ? "Collection already exists" : null,
+        groups.includes(input) ? "Group already exists" : null,
     });
     if (!name) {
       return;
     }
-    this.vault.addCollection(name);
+    this.vault.addGroup(name);
   }
 
-  async deleteCollection(collection: Collection) {
-    await this.vault.deleteCollection(collection);
+  async deleteGroup(group: Group) {
+    await this.vault.deleteGroup(group);
   }
 
   async copySecret(secret: Secret) {
@@ -150,8 +150,8 @@ export class SecretController {
     }
   }
 
-  async toggleCollection(collection: Collection) {
-    this.vault.toggleCollection(collection);
+  async toggleGroup(group: Group) {
+    this.vault.toggleGroup(group);
   }
 
   static register(context: ExtensionContext, vault: Vault) {
@@ -160,7 +160,7 @@ export class SecretController {
     context.subscriptions.push(
       commands.registerCommand("secrets.import", () => controller.import()),
       commands.registerCommand("secrets.export", () => controller.export()),
-      commands.registerCommand("secrets.create", (environment: Collection) =>
+      commands.registerCommand("secrets.create", (environment: Group) =>
         controller.create(environment.name)
       ),
       commands.registerCommand("secrets.delete", (secret: Secret) =>
@@ -172,15 +172,15 @@ export class SecretController {
       commands.registerCommand("secrets.copy", (secret: Secret) =>
         controller.copySecret(secret)
       ),
-      commands.registerCommand("collections.create", () =>
-        controller.addCollection()
+      commands.registerCommand("groups.create", () =>
+        controller.addGroup()
       ),
       commands.registerCommand(
-        "collections.delete",
-        (collection: Collection) => controller.deleteCollection(collection)
+        "groups.delete",
+        (group: Group) => controller.deleteGroup(group)
       ),
-      commands.registerCommand("collections.enable", (collection: Collection) => controller.toggleCollection(collection)),
-      commands.registerCommand("collections.disable", (collection: Collection) => controller.toggleCollection(collection)),
+      commands.registerCommand("groups.enable", (group: Group) => controller.toggleGroup(group)),
+      commands.registerCommand("groups.disable", (group: Group) => controller.toggleGroup(group)),
       commands.registerCommand("secrets.refresh", () => controller.refresh()),
     );
   }

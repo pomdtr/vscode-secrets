@@ -17,7 +17,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const vault = await Vault.create(
     context.secrets,
-    context.environmentVariableCollection
+    context.environmentVariableGroup
   );
   SecretController.register(context, vault);
   VaultTreeDataProvider.register(context, vault);

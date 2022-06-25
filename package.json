@@ -22,9 +22,9 @@
 		"configuration": {
 			"title": "Secrets",
 			"properties": {
-				"secrets.enabledCollections": {
+				"secrets.enabledGroups": {
 					"type": "array",
-					"markdownDescription": "The secrets collections to load in the current Workspace",
+					"markdownDescription": "The secrets groups to load in the current Workspace",
 					"items": {
 						"type": "string"
 					},
@@ -53,26 +53,26 @@
 			],
 			"view/item/context": [
 				{
-					"command": "collections.create",
-					"when": "view == secretExplorer && viewItem == category-collections",
+					"command": "groups.create",
+					"when": "view == secretExplorer && viewItem == category-groups",
 					"group": "inline@1"
 				},
 				{
-					"command": "collections.enable",
-					"when": "view == secretExplorer && viewItem == disabled-collection"
+					"command": "groups.enable",
+					"when": "view == secretExplorer && viewItem == disabled-group"
 				},
 				{
-					"command": "collections.disable",
-					"when": "view == secretExplorer && viewItem == enabled-collection"
+					"command": "groups.disable",
+					"when": "view == secretExplorer && viewItem == enabled-group"
 				},
 				{
 					"command": "secrets.create",
-					"when": "view == secretExplorer && viewItem =~ /^enabled-collection$|^disabled-collection$/",
+					"when": "view == secretExplorer && viewItem =~ /^enabled-group$|^disabled-group$/",
 					"group": "inline@1"
 				},
 				{
-					"command": "collections.delete",
-					"when": "view == secretExplorer && viewItem =~ /^enabled-collection$|^disabled-collection$/",
+					"command": "groups.delete",
+					"when": "view == secretExplorer && viewItem =~ /^enabled-group$|^disabled-group$/",
 					"group": "inline@2"
 				},
 				{
@@ -93,19 +93,19 @@
 			],
 			"commandPalette": [
 				{
-					"command": "collections.create",
+					"command": "groups.create",
 					"when": "false"
 				},
 				{
-					"command": "collections.delete",
+					"command": "groups.delete",
 					"when": "false"
 				},
 				{
-					"command": "collections.enable",
+					"command": "groups.enable",
 					"when": "false"
 				},
 				{
-					"command": "collections.disable",
+					"command": "groups.disable",
 					"when": "false"
 				},
 				{
@@ -142,25 +142,25 @@
 		},
 		"commands": [
 			{
-				"command": "collections.create",
-				"title": "Add Collection",
+				"command": "groups.create",
+				"title": "Add Group",
 				"icon": "$(plus)",
 				"category": "secrets"
 			},
 			{
-				"command": "collections.delete",
-				"title": "Add Collection",
+				"command": "groups.delete",
+				"title": "Add Group",
 				"icon": "$(trash)",
 				"category": "secrets"
 			},
 			{
-				"command": "collections.enable",
-				"title": "Enable Collection",
+				"command": "groups.enable",
+				"title": "Enable Group",
 				"category": "secrets"
 			},
 			{
-				"command": "collections.disable",
-				"title": "Disable Collection",
+				"command": "groups.disable",
+				"title": "Disable Group",
 				"category": "secrets"
 			},
 			{
