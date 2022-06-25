@@ -48,14 +48,14 @@
 				{
 					"command": "secrets.refresh",
 					"when": "view == secretExplorer",
-					"folder": "navigation"
+					"group": "navigation"
 				}
 			],
 			"view/item/context": [
 				{
 					"command": "folders.create",
 					"when": "view == secretExplorer && viewItem == category-folders",
-					"folder": "inline@1"
+					"group": "inline@1"
 				},
 				{
 					"command": "folders.enable",
@@ -68,27 +68,27 @@
 				{
 					"command": "secrets.create",
 					"when": "view == secretExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
-					"folder": "inline@1"
+					"group": "inline@1"
 				},
 				{
 					"command": "folders.delete",
 					"when": "view == secretExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
-					"folder": "inline@2"
+					"group": "inline@2"
 				},
 				{
 					"command": "secrets.delete",
 					"when": "view == secretExplorer && viewItem == secret",
-					"folder": "inline@3"
+					"group": "inline@3"
 				},
 				{
 					"command": "secrets.copy",
 					"when": "view == secretExplorer && viewItem == secret",
-					"folder": "inline@1"
+					"group": "inline@1"
 				},
 				{
 					"command": "secrets.edit",
 					"when": "view == secretExplorer && viewItem == secret",
-					"folder": "inline@2"
+					"group": "inline@2"
 				}
 			],
 			"commandPalette": [
