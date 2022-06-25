@@ -13,9 +13,9 @@
 			"isBackground": true,
 			"presentation": {
 				"reveal": "never",
-				"group": "watchers"
+				"folder": "watchers"
 			},
-			"group": {
+			"folder": {
 				"kind": "build",
 				"isDefault": true
 			}

@@ -6,10 +6,10 @@ import {
   EnvironmentVariableCollection,
   ConfigurationTarget,
 } from "vscode";
-import { Group, Secret } from "./tree";
+import { Folder, Secret } from "./tree";
 
 export interface Secrets {
-  [group: string]: {
+  [folder: string]: {
     [key: string]: string;
   };
 }
@@ -19,16 +19,16 @@ export class Vault {
   private static readonly storageKey = "secrets";
 
   private secrets: Secrets = {};
-  private enabledGroups: string[] = [];
+  private enabledFolders: string[] = [];
 
   private _onChange: EventEmitter<void> = new EventEmitter();
   readonly onChange = this._onChange.event;
 
   public getActiveSecrets(): Record<string, Secret> {
     const activeSecrets: Record<string, Secret> = {};
-    for (const context of this.enabledGroups) {
+    for (const context of this.enabledFolders) {
       for (const key of Object.keys(this.secrets[context] || {})) {
-        activeSecrets[key] = { key, group: context };
+        activeSecrets[key] = { key, folder: context };
       }
     }
 
@@ -42,7 +42,7 @@ export class Vault {
     const vault = new Vault(storage, env);
 
     await vault.load();
-    await vault.loadEnabledGroups();
+    await vault.loadEnabledFolders();
     await vault.refresh();
 
     storage.onDidChange(async (e) => {
@@ -53,8 +53,8 @@ export class Vault {
     });
 
     workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration(`${this.storageKey}.enabledGroups`)) {
-        vault.loadEnabledGroups();
+      if (e.affectsConfiguration(`${this.storageKey}.enabledFolders`)) {
+        vault.loadEnabledFolders();
         vault.refresh();
       }
     });
@@ -74,10 +74,10 @@ export class Vault {
         };
   }
 
-  public async loadEnabledGroups() {
-    this.enabledGroups = workspace
+  public async loadEnabledFolders() {
+    this.enabledFolders = workspace
       .getConfiguration(Vault.storageKey)
-      .get("enabledGroups", ["default"]);
+      .get("enabledFolders", ["default"]);
   }
 
   public constructor(
@@ -91,7 +91,7 @@ export class Vault {
   public async refresh() {
     const activeSecrets = this.getActiveSecrets();
 
-    // Clean up secrets that are not in the active groups
+    // Clean up secrets that are not in the active folders
     this.windowEnv.forEach((key) => {
       if (!activeSecrets[key]) {
         this.windowEnv.delete(key);
@@ -111,29 +111,29 @@ export class Vault {
   }
 
   public async store(secret: Secret, value: string): Promise<void> {
-    this.secrets[secret.group] = {
-      ...this.secrets[secret.group],
+    this.secrets[secret.folder] = {
+      ...this.secrets[secret.folder],
       [secret.key]: value,
     };
     this.save();
   }
 
   public get(secret: Secret): string | undefined {
-    return this.secrets[secret.group]?.[secret.key];
+    return this.secrets[secret.folder]?.[secret.key];
   }
 
   public async delete(secret: Secret): Promise<void> {
-    delete this.secrets[secret.group][secret.key];
+    delete this.secrets[secret.folder][secret.key];
     this.save();
   }
 
-  public listGroups(): Group[] {
-    return Object.entries(this.secrets).map(([group, secrets]) => ({
-      name: group,
-      enabled: this.enabledGroups.includes(group),
+  public listFolders(): Folder[] {
+    return Object.entries(this.secrets).map(([folder, secrets]) => ({
+      name: folder,
+      enabled: this.enabledFolders.includes(folder),
       secrets: Object.entries(secrets).map(([key]) => ({
         key,
-        group,
+        folder,
       })),
     }));
   }
@@ -155,56 +155,56 @@ export class Vault {
     await workspace.fs.writeFile(uri, buffer);
   }
 
-  public async addGroup(name: string) {
+  public async addFolder(name: string) {
     if (this.secrets[name]) {
-      throw new Error(`Group ${name} already exists`);
+      throw new Error(`Folder ${name} already exists`);
     }
     this.secrets[name] = {};
     await workspace
       .getConfiguration(Vault.storageKey)
       .update(
-        "enabledGroups",
-        [...this.enabledGroups, name],
+        "enabledFolders",
+        [...this.enabledFolders, name],
         this.getConfigurationTarget()
       );
     await this.save();
   }
 
-  public async deleteGroup(group: Group) {
-    if (!this.secrets[group.name]) {
-      throw new Error(`Group ${group.name} does not exist`);
+  public async deleteFolder(folder: Folder) {
+    if (!this.secrets[folder.name]) {
+      throw new Error(`Folder ${folder.name} does not exist`);
     }
-    delete this.secrets[group.name];
+    delete this.secrets[folder.name];
 
     const conf = workspace.getConfiguration(Vault.storageKey);
     if (this.getConfigurationTarget() === ConfigurationTarget.Workspace) {
       conf.update(
-        "enabledGroups",
-        this.enabledGroups.filter((c) => c !== group.name),
+        "enabledFolders",
+        this.enabledFolders.filter((c) => c !== folder.name),
         ConfigurationTarget.Workspace
       );
     }
     conf.update(
-      "enabledGroups",
-      this.enabledGroups.filter((c) => c !== group.name),
+      "enabledFolders",
+      this.enabledFolders.filter((c) => c !== folder.name),
       ConfigurationTarget.Global
     );
     await this.save();
   }
 
-  toggleGroup(group: Group) {
+  toggleFolder(folder: Folder) {
     const conf = workspace.getConfiguration(Vault.storageKey);
 
-    if (group.enabled) {
+    if (folder.enabled) {
       conf.update(
-        "enabledGroups",
-        this.enabledGroups.filter((c) => c !== group.name),
+        "enabledFolders",
+        this.enabledFolders.filter((c) => c !== folder.name),
         this.getConfigurationTarget()
       );
     } else {
       conf.update(
-        "enabledGroups",
-        [...this.enabledGroups, group.name],
+        "enabledFolders",
+        [...this.enabledFolders, folder.name],
         this.getConfigurationTarget()
       );
     }

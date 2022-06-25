@@ -11,7 +11,7 @@ import {
 } from "vscode";
 import { Vault } from "./vault";
 
-export interface Group {
+export interface Folder {
   name: string;
   enabled: boolean;
   secrets: Secret[];
@@ -19,16 +19,16 @@ export interface Group {
 
 export interface Secret {
   key: string;
-  group: string;
+  folder: string;
 }
 
 export interface Category {
   name: string;
   expanded: boolean;
-  children: Secret[] | Group[];
+  children: Secret[] | Folder[];
 }
 
-type Node = Secret | Category | Group;
+type Node = Secret | Category | Folder;
 
 export class VaultTreeDataProvider implements TreeDataProvider<Node> {
   vault: Vault;
@@ -58,7 +58,7 @@ export class VaultTreeDataProvider implements TreeDataProvider<Node> {
     return item.hasOwnProperty("children");
   }
 
-  isGroup(item: Node): item is Group {
+  isFolder(item: Node): item is Folder {
     return item.hasOwnProperty("secrets");
   }
 
@@ -71,25 +71,26 @@ export class VaultTreeDataProvider implements TreeDataProvider<Node> {
           : TreeItemCollapsibleState.Collapsed,
         contextValue: `category-${item.name.toLowerCase()}`,
       };
-    } else if (this.isGroup(item)) {
+    } else if (this.isFolder(item)) {
       return {
         label: item.name,
         collapsibleState: TreeItemCollapsibleState.Collapsed,
         description: item.enabled ? "Enabled" : "Disabled",
-        contextValue: item.enabled ? "enabled-group" : "disabled-group",
+        iconPath: new ThemeIcon("folder"),
+        contextValue: item.enabled ? "enabled-folder" : "disabled-folder",
       };
     } else {
       return {
         label: item.key,
         iconPath: new ThemeIcon("key"),
         tooltip: this.vault.get(item),
-        description: item.group,
+        description: item.folder,
         contextValue: "secret",
       };
     }
   }
 
-  getChildren(item?: Category | Group): ProviderResult<Node[]> {
+  getChildren(item?: Category | Folder): ProviderResult<Node[]> {
     if (item) {
       return this.isCategory(item) ? item.children : item.secrets;
     }
@@ -100,8 +101,8 @@ export class VaultTreeDataProvider implements TreeDataProvider<Node> {
         expanded: true,
       },
       {
-        name: "Groups",
-        children: this.vault.listGroups(),
+        name: "Folders",
+        children: this.vault.listFolders(),
         expanded: false,
       },
     ];

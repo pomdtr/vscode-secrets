@@ -6,7 +6,7 @@ import {
   Uri,
   env,
 } from "vscode";
-import { Group, Secret } from "./tree";
+import { Folder, Secret } from "./tree";
 import { Vault } from "./vault";
 
 export class SecretController {
@@ -122,24 +122,24 @@ export class SecretController {
       return;
     }
 
-    await this.vault.store({ group: environment, key }, value);
+    await this.vault.store({ folder: environment, key }, value);
   }
 
-  async addGroup() {
-    const groups = this.vault.listGroups().map((c) => c.name);
+  async addFolder() {
+    const folders = this.vault.listFolders().map((c) => c.name);
     const name = await window.showInputBox({
-      title: "Group Name",
+      title: "Folder Name",
       validateInput: (input) =>
-        groups.includes(input) ? "Group already exists" : null,
+        folders.includes(input) ? "Folder already exists" : null,
     });
     if (!name) {
       return;
     }
-    this.vault.addGroup(name);
+    this.vault.addFolder(name);
   }
 
-  async deleteGroup(group: Group) {
-    await this.vault.deleteGroup(group);
+  async deleteFolder(folder: Folder) {
+    await this.vault.deleteFolder(folder);
   }
 
   async copySecret(secret: Secret) {
@@ -150,8 +150,8 @@ export class SecretController {
     }
   }
 
-  async toggleGroup(group: Group) {
-    this.vault.toggleGroup(group);
+  async toggleFolder(folder: Folder) {
+    this.vault.toggleFolder(folder);
   }
 
   static register(context: ExtensionContext, vault: Vault) {
@@ -160,7 +160,7 @@ export class SecretController {
     context.subscriptions.push(
       commands.registerCommand("secrets.import", () => controller.import()),
       commands.registerCommand("secrets.export", () => controller.export()),
-      commands.registerCommand("secrets.create", (environment: Group) =>
+      commands.registerCommand("secrets.create", (environment: Folder) =>
         controller.create(environment.name)
       ),
       commands.registerCommand("secrets.delete", (secret: Secret) =>
@@ -172,15 +172,15 @@ export class SecretController {
       commands.registerCommand("secrets.copy", (secret: Secret) =>
         controller.copySecret(secret)
       ),
-      commands.registerCommand("groups.create", () =>
-        controller.addGroup()
+      commands.registerCommand("folders.create", () =>
+        controller.addFolder()
       ),
       commands.registerCommand(
-        "groups.delete",
-        (group: Group) => controller.deleteGroup(group)
+        "folders.delete",
+        (folder: Folder) => controller.deleteFolder(folder)
       ),
-      commands.registerCommand("groups.enable", (group: Group) => controller.toggleGroup(group)),
-      commands.registerCommand("groups.disable", (group: Group) => controller.toggleGroup(group)),
+      commands.registerCommand("folders.enable", (folder: Folder) => controller.toggleFolder(folder)),
+      commands.registerCommand("folders.disable", (folder: Folder) => controller.toggleFolder(folder)),
       commands.registerCommand("secrets.refresh", () => controller.refresh()),
     );
   }
