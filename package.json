@@ -2,10 +2,10 @@
 	"name": "secrets",
 	"publisher": "pomdtr",
 	"displayName": "Secrets",
-	"description": "Manage Credentials in a Secure Way",
+	"description": "Manage your Credentials in a Secure Way",
 	"keywords": ["secret", "credential", "password", "vault"],
 	"icon": "assets/icon.png",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/pomdtr/vscode-secrets"
