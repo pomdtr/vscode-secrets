@@ -15,7 +15,7 @@ All secrets belong to a folder. Folders allow you scope a set of secrets to spec
 Use the `secrets.enabledFolders` setting to specify which folders to enable specific folders in you current workspace (if you do not set it, only secrets from the `default` folder will be loaded). \
 Alternatively, you can use the `enable/disable` context buttons on the folder items in the secret explorer view.
 
-```javascript
+```jsonc
 {
     // Both the default and github folders will be loaded in this workspace
     "secrets.enabledFolders": [
