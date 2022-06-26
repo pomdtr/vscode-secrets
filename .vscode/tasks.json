@@ -13,9 +13,11 @@
 			"isBackground": true,
 			"presentation": {
 				"reveal": "never",
-				"folder": "watchers"
+				"group": "watchers"
 			},
-			"folder": {
+			"label": "npm: watch",
+			"detail": "webpack --watch",
+			"group": {
 				"kind": "build",
 				"isDefault": true
 			}

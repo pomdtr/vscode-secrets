@@ -16,7 +16,7 @@ export interface Secrets {
 export class Vault {
   private readonly storage: SecretStorage;
   private readonly windowEnv: EnvironmentVariableCollection;
-  private static readonly storageKey = "secrets";
+  private static readonly storageKey = "secretManager";
 
   private secrets: Secrets = {};
   private enabledFolders: string[] = [];
@@ -142,15 +142,33 @@ export class Vault {
     return input.match(/^[a-zA-Z_]+[a-zA-Z0-9_]*$/) ? true : false;
   }
 
+  validateVault(vault: any) {
+    if (!(typeof vault === "object")) {
+      throw new Error("Vault should be an object");
+    }
+    for (const [folder, secrets] of Object.entries(vault)) {
+      if (!secrets || !(typeof secrets === "object")) {
+        throw new Error(`${folder} folder should be an object`);
+      }
+      for (const [key, value] of Object.entries(secrets)) {
+        if (!(typeof value === "string")) {
+          throw new Error(`${key} secret value should be a string`)
+        }
+      }
+    }
+  }
+
   async import(uri: Uri) {
     const document = await workspace.openTextDocument(uri);
     const content = document.getText();
-    this.secrets = JSON.parse(content);
+    const vault = JSON.parse(content);
+    this.validateVault(vault);
+    this.secrets = vault;
     this.save();
   }
 
   async export(uri: Uri) {
-    const vault = await this.storage.get("secrets");
+    const vault = await this.storage.get("secretManager");
     const buffer = Buffer.from(vault || "{}", "utf-8");
     await workspace.fs.writeFile(uri, buffer);
   }

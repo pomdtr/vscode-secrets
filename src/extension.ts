@@ -8,13 +8,6 @@ import { Vault } from "./vault";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-  // const uri = vscode.Uri.file(
-  //   "/Users/a.lacoin/Developer/pomdtr/vault/examples/secrets.json"
-  // );
-  // const document = await vscode.workspace.openTextDocument(uri);
-  // const secrets = document.getText();
-  // context.secrets.store("secrets", secrets);
-
   const vault = await Vault.create(
     context.secrets,
     context.environmentVariableCollection

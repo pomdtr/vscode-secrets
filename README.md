@@ -1,6 +1,6 @@
-# Visual Studio Code Secrets
+# Secret Manager
 
-Define secrets shared accross workspaces, injected as environment variables.
+Define secrets shared accross workspaces, injected as environment variables. Supports both local and remote workspaces.
 
 ## Usage
 
@@ -18,7 +18,7 @@ Alternatively, you can use the `enable/disable` context menu actions on the fold
 ```javascript
 {
     // Both the default and github folders will be loaded in this workspace
-    "secrets.enabledFolders": [
+    "secretManager.enabledFolders": [
         "default",
         "github"// If one secret is defined in multiple folders, the secret from the last folder in the array will be used.
     ]
@@ -29,4 +29,4 @@ Alternatively, you can use the `enable/disable` context menu actions on the fold
 
 You secrets are stored in system's keychain. Once you start vscode, the secrets are loaded from the keychain, and then injected as environment variables.
 
-The secrets will not be synchronised between devices. You can use the `Import Secrets` and `Export Secrets` commands to synchronise secrets between devices.
+The secrets will not be synchronised between devices. You can use the `Import Secrets` and `Export Secrets` commands to migrate secrets between devices.

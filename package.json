@@ -1,8 +1,8 @@
 {
-	"name": "secrets",
+	"name": "secret-manager",
 	"publisher": "pomdtr",
 	"displayName": "Secrets",
-	"description": "Manage secrets in a secure way",
+	"description": "Manage Secrets in a Secure Way",
 	"version": "0.0.1",
 	"repository": {
 		"type": "git",
@@ -22,7 +22,7 @@
 		"configuration": {
 			"title": "Secrets",
 			"properties": {
-				"secrets.enabledFolders": {
+				"secretManager.enabledFolders": {
 					"type": "array",
 					"markdownDescription": "The secrets folders to load in the current Workspace",
 					"items": {
@@ -35,58 +35,67 @@
 				}
 			}
 		},
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"icon": "$(lock)",
+					"title": "Secret Manager",
+					"id": "secretManager"
+				}
+			]
+		},
 		"menus": {
 			"view/title": [
 				{
-					"command": "secrets.import",
+					"command": "secretManager.secrets.import",
 					"when": "view == secretExplorer"
 				},
 				{
-					"command": "secrets.export",
+					"command": "secretManager.secrets.export",
 					"when": "view == secretExplorer"
 				},
 				{
-					"command": "secrets.refresh",
+					"command": "secretManager.secrets.refresh",
 					"when": "view == secretExplorer",
 					"group": "navigation"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "folders.create",
+					"command": "secretManager.folders.create",
 					"when": "view == secretExplorer && viewItem == category-folders",
 					"group": "inline@1"
 				},
 				{
-					"command": "folders.enable",
+					"command": "secretManager.folders.enable",
 					"when": "view == secretExplorer && viewItem == disabled-folder"
 				},
 				{
-					"command": "folders.disable",
+					"command": "secretManager.folders.disable",
 					"when": "view == secretExplorer && viewItem == enabled-folder"
 				},
 				{
-					"command": "secrets.create",
+					"command": "secretManager.secrets.create",
 					"when": "view == secretExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
 					"group": "inline@1"
 				},
 				{
-					"command": "folders.delete",
+					"command": "secretManager.folders.delete",
 					"when": "view == secretExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
 					"group": "inline@2"
 				},
 				{
-					"command": "secrets.delete",
+					"command": "secretManager.secrets.delete",
 					"when": "view == secretExplorer && viewItem == secret",
 					"group": "inline@3"
 				},
 				{
-					"command": "secrets.copy",
+					"command": "secretManager.secrets.copy",
 					"when": "view == secretExplorer && viewItem == secret",
 					"group": "inline@1"
 				},
 				{
-					"command": "secrets.edit",
+					"command": "secretManager.secrets.edit",
 					"when": "view == secretExplorer && viewItem == secret",
 					"group": "inline@2"
 				}
@@ -95,81 +104,81 @@
 			]
 		},
 		"views": {
-			"explorer": [
+			"secretManager": [
 				{
 					"id": "secretExplorer",
-					"name": "Secrets",
-					"contextualTitle": "Secrets",
+					"name": "Explorer",
+					"contextualTitle": "Secret Manager",
 					"icon": "$(lock)"
 				}
 			]
 		},
 		"commands": [
 			{
-				"command": "folders.create",
+				"command": "secretManager.folders.create",
 				"title": "Add Folder",
 				"icon": "$(plus)",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "folders.delete",
+				"command": "secretManager.folders.delete",
 				"title": "Add Folder",
 				"icon": "$(trash)",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "folders.enable",
+				"command": "secretManager.folders.enable",
 				"title": "Enable Folder",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "folders.disable",
+				"command": "secretManager.folders.disable",
 				"title": "Disable Folder",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.refresh",
+				"command": "secretManager.secrets.refresh",
 				"title": "Refresh Secrets",
 				"icon": "$(refresh)",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.edit",
+				"command": "secretManager.secrets.edit",
 				"title": "Edit Secret",
 				"shortTitle": "Edit",
 				"icon": "$(pencil)",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.copy",
+				"command": "secretManager.secrets.copy",
 				"title": "Copy Secret",
 				"shortTitle": "Copy",
 				"icon": "$(clippy)",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.delete",
+				"command": "secretManager.secrets.delete",
 				"title": "Delete Secret",
 				"shortTitle": "Delete",
 				"icon": "$(trash)",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.create",
+				"command": "secretManager.secrets.create",
 				"title": "Create Secret",
 				"shortTitle": "Create",
 				"icon": "$(plus)",
-				"category": "secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.import",
+				"command": "secretManager.secrets.import",
 				"title": "Import Secrets",
-				"category": "Secrets"
+				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.export",
+				"command": "secretManager.secrets.export",
 				"title": "Export Secrets",
-				"category": "Secrets"
+				"category": "Secret Manager"
 			}
 		]
 	},
