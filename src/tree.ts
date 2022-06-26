@@ -41,7 +41,7 @@ export class VaultTreeDataProvider implements TreeDataProvider<Node> {
   static register(context: ExtensionContext, vault: Vault) {
     const tree = new VaultTreeDataProvider(vault);
     return context.subscriptions.push(
-      window.registerTreeDataProvider("secretExplorer", tree)
+      window.registerTreeDataProvider("secretsExplorer", tree)
     );
   }
 

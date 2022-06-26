@@ -158,8 +158,8 @@ export class SecretController {
     const controller = new SecretController(vault);
 
     context.subscriptions.push(
-      commands.registerCommand("secrets.item.import", () => controller.import()),
-      commands.registerCommand("secrets.item.export", () => controller.export()),
+      commands.registerCommand("secrets.import", () => controller.import()),
+      commands.registerCommand("secrets.export", () => controller.export()),
       commands.registerCommand("secrets.item.create", (environment: Folder) =>
         controller.create(environment.name)
       ),
@@ -181,7 +181,7 @@ export class SecretController {
       ),
       commands.registerCommand("secrets.folder.enable", (folder: Folder) => controller.toggleFolder(folder)),
       commands.registerCommand("secrets.folder.disable", (folder: Folder) => controller.toggleFolder(folder)),
-      commands.registerCommand("secrets.item.refresh", () => controller.refresh()),
+      commands.registerCommand("secrets.refresh", () => controller.refresh()),
     );
   }
 }

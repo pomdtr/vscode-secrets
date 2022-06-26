@@ -4,7 +4,7 @@
 	"displayName": "Secrets",
 	"description": "Manage Credentials in a Secure Way",
 	"icon": "assets/icon.excalidraw.png",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/pomdtr/vscode-secrets"
@@ -16,7 +16,10 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onStartupFinished"
+		"onStartupFinished",
+		"onView:secretsExplorer",
+		"onCommand:secrets.import",
+		"onCommand:secrets.export"
 	],
 	"browser": "./dist/extension.js",
 	"contributes": {
@@ -48,56 +51,56 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "secrets.item.import",
-					"when": "view == secretExplorer"
+					"command": "secrets.import",
+					"when": "view == secretsExplorer"
 				},
 				{
-					"command": "secrets.item.export",
-					"when": "view == secretExplorer"
+					"command": "secrets.export",
+					"when": "view == secretsExplorer"
 				},
 				{
-					"command": "secrets.item.refresh",
-					"when": "view == secretExplorer",
+					"command": "secrets.refresh",
+					"when": "view == secretsExplorer",
 					"group": "navigation"
 				}
 			],
 			"view/item/context": [
 				{
 					"command": "secrets.folder.create",
-					"when": "view == secretExplorer && viewItem == category-folders",
+					"when": "view == secretsExplorer && viewItem == category-folders",
 					"group": "inline@1"
 				},
 				{
 					"command": "secrets.folder.enable",
-					"when": "view == secretExplorer && viewItem == disabled-folder"
+					"when": "view == secretsExplorer && viewItem == disabled-folder"
 				},
 				{
 					"command": "secrets.folder.disable",
-					"when": "view == secretExplorer && viewItem == enabled-folder"
+					"when": "view == secretsExplorer && viewItem == enabled-folder"
 				},
 				{
 					"command": "secrets.item.create",
-					"when": "view == secretExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
+					"when": "view == secretsExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
 					"group": "inline@1"
 				},
 				{
 					"command": "secrets.folder.delete",
-					"when": "view == secretExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
+					"when": "view == secretsExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
 					"group": "inline@2"
 				},
 				{
 					"command": "secrets.item.delete",
-					"when": "view == secretExplorer && viewItem == secret",
+					"when": "view == secretsExplorer && viewItem == secret",
 					"group": "inline@3"
 				},
 				{
 					"command": "secrets.item.copy",
-					"when": "view == secretExplorer && viewItem == secret",
+					"when": "view == secretsExplorer && viewItem == secret",
 					"group": "inline@1"
 				},
 				{
 					"command": "secrets.item.edit",
-					"when": "view == secretExplorer && viewItem == secret",
+					"when": "view == secretsExplorer && viewItem == secret",
 					"group": "inline@2"
 				}
 			],
@@ -107,7 +110,7 @@
 		"views": {
 			"secrets": [
 				{
-					"id": "secretExplorer",
+					"id": "secretsExplorer",
 					"name": "Explorer",
 					"contextualTitle": "Secrets",
 					"icon": "$(lock)"
@@ -138,7 +141,7 @@
 				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.item.refresh",
+				"command": "secrets.refresh",
 				"title": "Refresh Secrets",
 				"icon": "$(refresh)",
 				"category": "Secret Manager"
@@ -172,12 +175,12 @@
 				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.item.import",
+				"command": "secrets.import",
 				"title": "Import File",
 				"category": "Secret Manager"
 			},
 			{
-				"command": "secrets.item.export",
+				"command": "secrets.export",
 				"title": "Export",
 				"category": "Secret Manager"
 			}
