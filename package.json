@@ -5,7 +5,7 @@
 	"description": "Manage Credentials in a Secure Way",
 	"keywords": ["secret", "credential", "password", "vault"],
 	"icon": "assets/icon.excalidraw.png",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/pomdtr/vscode-secrets"
@@ -73,25 +73,22 @@
 				},
 				{
 					"command": "secrets.folder.enable",
-					"when": "view == secretsExplorer && viewItem == disabled-folder"
+					"when": "view == secretsExplorer && viewItem == disabled-folder",
+					"group": "inline@1"
 				},
 				{
 					"command": "secrets.folder.disable",
-					"when": "view == secretsExplorer && viewItem == enabled-folder"
+					"when": "view == secretsExplorer && viewItem == enabled-folder",
+					"group": "inline@1"
 				},
 				{
 					"command": "secrets.item.create",
 					"when": "view == secretsExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
-					"group": "inline@1"
+					"group": "inline@2"
 				},
 				{
 					"command": "secrets.folder.delete",
 					"when": "view == secretsExplorer && viewItem =~ /^enabled-folder$|^disabled-folder$/",
-					"group": "inline@2"
-				},
-				{
-					"command": "secrets.item.delete",
-					"when": "view == secretsExplorer && viewItem == secret",
 					"group": "inline@3"
 				},
 				{
@@ -103,6 +100,11 @@
 					"command": "secrets.item.edit",
 					"when": "view == secretsExplorer && viewItem == secret",
 					"group": "inline@2"
+				},
+				{
+					"command": "secrets.item.delete",
+					"when": "view == secretsExplorer && viewItem == secret",
+					"group": "inline@3"
 				}
 			],
 			"commandPalette": [
@@ -134,12 +136,14 @@
 			{
 				"command": "secrets.folder.enable",
 				"title": "Enable Folder",
+				"icon": "$(circle-large-outline)",
 				"category": "Secret Manager"
 			},
 			{
 				"command": "secrets.folder.disable",
 				"title": "Disable Folder",
-				"category": "Secret Manager"
+				"category": "Secret Manager",
+				"icon": "$(pass-filled)"
 			},
 			{
 				"command": "secrets.refresh",
