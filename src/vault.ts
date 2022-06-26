@@ -16,7 +16,7 @@ export interface Secrets {
 export class Vault {
   private readonly storage: SecretStorage;
   private readonly windowEnv: EnvironmentVariableCollection;
-  private static readonly storageKey = "secretManager";
+  private static readonly storageKey = "secrets";
 
   private secrets: Secrets = {};
   private enabledFolders: string[] = [];
@@ -168,7 +168,7 @@ export class Vault {
   }
 
   async export(uri: Uri) {
-    const vault = await this.storage.get("secretManager");
+    const vault = await this.storage.get("secrets");
     const buffer = Buffer.from(vault || "{}", "utf-8");
     await workspace.fs.writeFile(uri, buffer);
   }

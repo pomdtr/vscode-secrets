@@ -158,30 +158,30 @@ export class SecretController {
     const controller = new SecretController(vault);
 
     context.subscriptions.push(
-      commands.registerCommand("secretManager.secrets.import", () => controller.import()),
-      commands.registerCommand("secretManager.secrets.export", () => controller.export()),
-      commands.registerCommand("secretManager.secrets.create", (environment: Folder) =>
+      commands.registerCommand("secrets.item.import", () => controller.import()),
+      commands.registerCommand("secrets.item.export", () => controller.export()),
+      commands.registerCommand("secrets.item.create", (environment: Folder) =>
         controller.create(environment.name)
       ),
-      commands.registerCommand("secretManager.secrets.delete", (secret: Secret) =>
+      commands.registerCommand("secrets.item.delete", (secret: Secret) =>
         controller.deleteSecret(secret)
       ),
-      commands.registerCommand("secretManager.secrets.edit", (secret: Secret) =>
+      commands.registerCommand("secrets.item.edit", (secret: Secret) =>
         controller.editSecret(secret)
       ),
-      commands.registerCommand("secretManager.secrets.copy", (secret: Secret) =>
+      commands.registerCommand("secrets.item.copy", (secret: Secret) =>
         controller.copySecret(secret)
       ),
-      commands.registerCommand("secretManager.folders.create", () =>
+      commands.registerCommand("secrets.folder.create", () =>
         controller.addFolder()
       ),
       commands.registerCommand(
-        "secretManager.folders.delete",
+        "secrets.folder.delete",
         (folder: Folder) => controller.deleteFolder(folder)
       ),
-      commands.registerCommand("secretManager.folders.enable", (folder: Folder) => controller.toggleFolder(folder)),
-      commands.registerCommand("secretManager.folders.disable", (folder: Folder) => controller.toggleFolder(folder)),
-      commands.registerCommand("secretManager.secrets.refresh", () => controller.refresh()),
+      commands.registerCommand("secrets.folder.enable", (folder: Folder) => controller.toggleFolder(folder)),
+      commands.registerCommand("secrets.folder.disable", (folder: Folder) => controller.toggleFolder(folder)),
+      commands.registerCommand("secrets.item.refresh", () => controller.refresh()),
     );
   }
 }

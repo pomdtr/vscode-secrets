@@ -1,4 +1,4 @@
-# Secret Manager
+# Secrets
 
 Define secrets shared accross workspaces, injected as environment variables. Supports both local and remote workspaces.
 
@@ -18,7 +18,7 @@ Alternatively, you can use the `enable/disable` context menu actions on the fold
 ```javascript
 {
     // Both the default and github folders will be loaded in this workspace
-    "secretManager.enabledFolders": [
+    "secrets.enabledFolders": [
         "default",
         "github"// If one secret is defined in multiple folders, the secret from the last folder in the array will be used.
     ]
