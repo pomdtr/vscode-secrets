@@ -4,8 +4,8 @@
 	"displayName": "Secrets",
 	"description": "Manage Credentials in a Secure Way",
 	"keywords": ["secret", "credential", "password", "vault"],
-	"icon": "assets/icon.excalidraw.png",
-	"version": "0.2.0",
+	"icon": "assets/icon.png",
+	"version": "0.2.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/pomdtr/vscode-secrets"
