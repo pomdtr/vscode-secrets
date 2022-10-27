@@ -129,7 +129,7 @@
 			},
 			{
 				"command": "secrets.folder.delete",
-				"title": "Add Folder",
+				"title": "Delete Folder",
 				"icon": "$(trash)",
 				"category": "Secret Manager"
 			},
